@@ -58,10 +58,19 @@ set_all_coords() {
 	done
 }
 
-
-# Display grid in a grid format
+# Display grid in a simple grid format
 display_grid() {
 	for i in `seq 0 $grid_width`; do
 		echo "${rows[$i]}"
+	done
+}
+
+# Display grid in a cell-like format
+display_grid_fancy() {
+	for i in `seq 0 $grid_width`; do
+		str="${rows[$i]}"
+		printf "|"
+		printf ${str// /"|"}
+		echo "|"
 	done
 }
