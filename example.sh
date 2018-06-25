@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 source grid.sh
 
 create_grid $1 $2
