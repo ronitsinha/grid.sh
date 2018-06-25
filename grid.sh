@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # a set of rows, filled when create_grid() is called
 declare -a rows

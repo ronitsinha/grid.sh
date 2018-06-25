@@ -3,7 +3,7 @@ grid.sh is a simple bash library for creating and manipulating 2-dimensional gri
 
 example usage (also see `example.sh`):
 ```sh
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # access grid.sh library (assuming it is in the same directory)
 source grid.sh
