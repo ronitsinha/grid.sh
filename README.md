@@ -1,7 +1,7 @@
 # grid.sh
 grid.sh is a simple bash library for creating and manipulating 2-dimensional grids without directly using arrays.
 
-Example usage (also see `example.sh`):
+example usage (also see `example.sh`):
 ```sh
 #!/usr/bin/env sh
 
