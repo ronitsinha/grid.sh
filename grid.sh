@@ -1,76 +1,112 @@
 #!/usr/bin/env bash
 
-# a set of rows, filled when create_grid() is called
-declare -a rows
+# Initialize a grid with specified dimensions from an empty input array
+function create_grid {
+	# An array of strings, which represents the 2-dimensional grid
+	local -n gridsh_new_grid="$1"
 
-# The width and height of the grid, set when create_grid is called
-grid_width=-1
-grid_height=-1
+	# Desired grid dimensions
+	local gridsh_grid_width="$2"
+	local gridsh_grid_height="$3"
 
-# Initialize the grid
-create_grid () {
-	grid_width=$(("$1" - 1))
-	grid_height=$(("$2" - 1))
+	# Fill the new grid with dummy values (the coordinates, i.e. 0,0)
+	for i in `seq 0 $(($gridsh_grid_height - 1))`; do
 
-	for i in `seq 0 $grid_width`; do
-		declare -a col_temp
-		for j in `seq 0 $grid_height`; do
-			col_temp[j]="$i,$j"
+		declare -a row_temp
+
+		for j in `seq 0 $(($gridsh_grid_width - 1))`; do
+			row_temp[j]="$i,$j"
 		done
-		rows[i]=${col_temp[*]}
+
+		gridsh_new_grid[i]="${row_temp[@]}"
 	done
 }
 
-# Get the value at (x_index, y_index) in grid
-get_coord () {
-	x_index="$1"
-	y_index="$2"
+# Get height of gridsh_width_grid
+function get_grid_height {
+	local -n gridsh_width_grid="$1"
 
-	value="$(echo ${rows[$x_index]} )"
-	value_arr=($value)
-
-	echo ${value_arr[$y_index]}
+	echo "${#gridsh_width_grid[@]}"
 }
 
-# Set value at (x_index, y_index) to new_value
-set_coord () {
-	x_index="$1"
-	y_index="$2"
-	new_value="$3"
+# Get width of gridsh_height_grid
+function get_grid_width {
+	local -n gridsh_height_grid="$1"
 
-	value="$(echo ${rows[$x_index]} )"
-	value_arr=($value)
-	value_arr[$y_index]=$new_value
+	local sample=${gridsh_height_grid[0]}
+	local sample_arr=($sample)
 
-	rows[$x_index]=${value_arr[*]}
+	echo "${#sample_arr[@]}"
 }
 
-# Set every coordinate to val
-set_all_coords() {
-	val="$1"
+# Get value at (gridsh_x_index, gridsh_y_index) of gridsh_grid
+function get_coord {
+	local -n gridsh_grid="$1"
 
-	for i in `seq 0 $grid_width`; do
-		declare -a col_temp
-		for j in `seq 0 $grid_height`; do
-			col_temp[j]="$val"
+	local gridsh_x_index="$2"
+	local gridsh_y_index="$3"
+
+	local value="$( echo ${gridsh_grid[$gridsh_y_index]} )"
+	local value_arr=($value)
+
+	echo ${value_arr[$gridsh_x_index]}
+}
+
+# Set value at (gridsh_x_index, gridsh_y_index) of gridsh_grid to gridsh_value
+function set_coord {
+	local -n gridsh_grid="$1"
+
+	local gridsh_x_index="$2"
+	local gridsh_y_index="$3"
+	local gridsh_value="$4"
+
+	local value="$(echo ${gridsh_grid[$gridsh_y_index]} )"
+	local value_arr=($value)
+	
+	value_arr[$gridsh_x_index]=$gridsh_value
+
+	gridsh_grid[$gridsh_y_index]=${value_arr[@]}
+}
+
+# Set all values in gridsh_grid to gridsh_value
+function set_all_coords {
+	local -n gridsh_grid="$1"
+	local gridsh_value="$2"
+
+	local grid_width="$(get_grid_width gridsh_grid)"
+	local grid_height="$(get_grid_height gridsh_grid)"
+
+	for i in `seq 0 $(($grid_height - 1))`; do
+
+		declare -a row_temp
+
+		for j in `seq 0 $(($grid_width - 1))`; do
+			row_temp[j]="$gridsh_value"
 		done
-		rows[i]=${col_temp[*]}
+
+		gridsh_grid[i]="${row_temp[@]}"
 	done
 }
 
-# Display grid in a simple grid format
-display_grid() {
-	for i in `seq 0 $grid_width`; do
-		echo "${rows[$i]}"
+# Simply display gridsh_grid
+function display_grid {
+	local -n gridsh_grid="$1"
+
+	local grid_height="$(get_grid_height gridsh_grid)"
+
+	for i in `seq 0 $(( $grid_height - 1 ))`; do
+		echo "${gridsh_grid[$i]}"
 	done
 }
 
-# Display grid in a cell-like format
-display_grid_fancy() {
-	for i in `seq 0 $grid_width`; do
-		str="${rows[$i]}"
-		printf "|"
-		printf ${str// /"|"}
-		echo "|"
+# Display gridsh_grid with vertical borders between entries
+function display_grid_fancy {
+	local -n gridsh_grid="$1"
+
+	local grid_height="$(get_grid_height gridsh_grid)"
+
+	for i in `seq 0 $(( $grid_height - 1 ))`; do
+		local str="${gridsh_grid[$i]}"
+		echo "|${str// /"|"}|"
 	done
 }
