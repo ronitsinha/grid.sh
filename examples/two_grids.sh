@@ -13,7 +13,7 @@ grid_height="$2"
 # Instantiate grid
 create_grid grid $grid_width $grid_height
 
-# Fill grid with "rpck"
+# Fill grid with "rock"
 set_all_coords grid rock
 # Set value at (0, 0) to "gem"
 set_coord grid 0 0 gem
