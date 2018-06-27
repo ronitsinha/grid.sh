@@ -27,4 +27,4 @@ get_coord my_grid 0 0
 display_grid my_grid
 ```
 
-**Side note:** when using this library, do not make any variables with the prefix `gridsh_`. This will prevent any [circular name reference](http://mywiki.wooledge.org/BashFAQ/048#line-120 "Circular Name Reference")
+**Side note:** when using this library, do not make any variables with the prefix `gridsh_`. This will prevent [circular name reference](http://mywiki.wooledge.org/BashFAQ/048#line-120 "Circular Name Reference").

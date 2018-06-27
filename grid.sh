@@ -41,12 +41,12 @@ function get_grid_width {
 
 # Get value at (gridsh_x_index, gridsh_y_index) of gridsh_grid
 function get_coord {
-	local -n gridsh_grid="$1"
+	local -n gridsh_get_grid="$1"
 
 	local gridsh_x_index="$2"
 	local gridsh_y_index="$3"
 
-	local value="$( echo ${gridsh_grid[$gridsh_y_index]} )"
+	local value="$( echo ${gridsh_get_grid[$gridsh_y_index]} )"
 	local value_arr=($value)
 
 	echo ${value_arr[$gridsh_x_index]}
@@ -81,10 +81,10 @@ function set_all_coords {
 		declare -a row_temp
 
 		for j in `seq 0 $(($grid_width - 1))`; do
-			row_temp[j]="$gridsh_value"
+			row_temp[$j]="$gridsh_value"
 		done
 
-		gridsh_grid[i]="${row_temp[@]}"
+		gridsh_grid[$i]="${row_temp[@]}"
 	done
 }
 
@@ -95,7 +95,7 @@ function display_grid {
 	local grid_height="$(get_grid_height gridsh_grid)"
 
 	for i in `seq 0 $(( $grid_height - 1 ))`; do
-		echo "${gridsh_grid[$i]}"
+		echo -e "${gridsh_grid[$i]}"
 	done
 }
 
@@ -107,6 +107,50 @@ function display_grid_fancy {
 
 	for i in `seq 0 $(( $grid_height - 1 ))`; do
 		local str="${gridsh_grid[$i]}"
-		echo "|${str// /"|"}|"
+		echo -e "|${str// /"|"}|"
 	done
+}
+
+# Get values of adjacent coordinates and return them in a space-separated string 
+function get_neighbors {
+	local -n gridsh_grid="$1"
+	neighbors=()
+
+	local gridsh_cx="$2"
+	local gridsh_cy="$3"
+
+	local cx=$gridsh_cx
+	local cy=$gridsh_cy
+
+	if [[ "$cy" -gt 0 ]]; then
+		neighbors+=("$( get_coord gridsh_grid $cx $(($cy - 1)) )")
+		if [[ "$cx" -gt 0 ]]; then
+			neighbors+=("$( get_coord gridsh_grid $(($cx - 1)) $(($cy - 1)) )")
+		fi
+
+		if [[ "$cx" -lt $(( $(get_grid_width gridsh_grid) - 1 )) ]]; then
+			neighbors+=("$( get_coord gridsh_grid $(($cx + 1)) $(($cy - 1)) )")	
+		fi
+	fi
+
+	if [[ "$cy" -lt $(( $(get_grid_height gridsh_grid) - 1 )) ]]; then
+		neighbors+=("$( get_coord gridsh_grid $cx $(($cy + 1)) )")
+		if [[ "$cx" -gt 0 ]]; then
+			neighbors+=("$( get_coord gridsh_grid $(($cx - 1)) $(($cy + 1)) )")
+		fi
+
+		if [[ "$cx" -lt $(( $(get_grid_width gridsh_grid) - 1 )) ]]; then
+			neighbors+=("$( get_coord gridsh_grid $(($cx + 1)) $(($cy + 1)) )")	
+		fi
+	fi
+
+	if [[ "$cx" -gt 0 ]]; then
+		neighbors+=("$( get_coord gridsh_grid $(($cx - 1)) $cy )")
+	fi
+
+	if [[ "$cx" -lt $(( $(get_grid_width gridsh_grid) - 1 )) ]]; then
+		neighbors+=("$( get_coord gridsh_grid $(($cx + 1)) $cy )")	
+	fi
+
+	echo "${neighbors[@]}"
 }
